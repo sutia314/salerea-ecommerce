@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Majalaya E-Commerce</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-white flex justify-center items-center h-screen p-4">
+
+  <!-- Box Login -->
+  <div class="w-full max-w-sm bg-white p-6 border-2 border-pink-500 rounded-xl shadow-md text-center relative">
+    <h2 class="text-pink-500 text-2xl font-bold mb-4">Login Akun</h2>
+    <div id="error-login" class="text-red-500 text-sm mb-3"></div>
+
+    <label class="block text-left font-bold mb-1">Username</label>
+    <input type="text" id="username" placeholder="Masukkan username" 
+           class="w-full p-2 border-2 border-pink-500 rounded-md mb-3 focus:outline-none">
+
+    <label class="block text-left font-bold mb-1">Password</label>
+    <div class="relative mb-3">
+      <input type="password" id="password" placeholder="Masukkan password" 
+             class="w-full p-2 border-2 border-pink-500 rounded-md focus:outline-none">
+      <i class="fa-solid fa-eye absolute right-3 top-1/2 -translate-y-1/2 text-pink-500 cursor-pointer"
+         onclick="togglePassword('password', this)"></i>
+    </div>
+
+    <button onclick="loginUser()" 
+      class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold rounded-md shadow hover:opacity-90">
+      Login
+    </button>
+
+    <div class="mt-4 text-sm">
+      Belum punya akun? 
+      <a href="register.html" class="text-pink-500 font-bold">Daftar di sini</a><br>
+      <a href="#" onclick="forgotPassword()" class="text-pink-500 font-bold">Lupa password?</a>
+    </div>
+  </div>
+
+  <!-- Overlay Loading -->
+  <div id="overlay" class="hidden fixed inset-0 bg-white/90 flex flex-col justify-center items-center z-50">
+    <div class="w-12 h-12 border-4 border-gray-200 border-t-pink-500 rounded-full animate-spin mb-4"></div>
+    <p class="text-gray-700">Sedang memproses login...</p>
+  </div>
+
+<script>
+function togglePassword(fieldId, icon) {
+  const field = document.getElementById(fieldId);
+  if (field.type === 'password') {
+    field.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    field.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+function loginUser() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const errorBox = document.getElementById('error-login');
+  errorBox.textContent = "";
+
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const user = users.find(u => u.username === username && u.password === password);
+
+  if (!user) {
+    errorBox.textContent = "Username atau password salah!";
+    return;
+  }
+
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('username', user.username);
+
+  document.getElementById('overlay').classList.remove("hidden");
+
+  setTimeout(() => {
+    window.location.href = "home.html";
+  }, 2000);
+}
+
+function forgotPassword() {
+  const username = prompt("Masukkan username anda untuk reset password:");
+  if (!username) return;
+
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const user = users.find(u => u.username === username);
+
+  if (!user) {
+    alert("Username tidak ditemukan!");
+    return;
+  }
+  alert("Password anda adalah: " + user.password);
+}
+</script>
+
+</body>
+</html>
